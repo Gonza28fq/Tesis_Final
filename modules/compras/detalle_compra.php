@@ -8,7 +8,8 @@ try {
     $db = getDB();
     
     if (!isset($_GET['id_ingreso'])) {
-        jsonResponse(['success' => false, 'message' => 'ID no especificado'], 400);
+        echo json_encode(['success' => false, 'message' => 'ID no especificado']);
+        exit;
     }
     
     $idIngreso = intval($_GET['id_ingreso']);
@@ -27,10 +28,11 @@ try {
     
     $stmtIngreso = $db->prepare($sqlIngreso);
     $stmtIngreso->execute([':id_ingreso' => $idIngreso]);
-    $ingreso = $stmtIngreso->fetch();
+    $ingreso = $stmtIngreso->fetch(PDO::FETCH_ASSOC);
     
     if (!$ingreso) {
-        jsonResponse(['success' => false, 'message' => 'Ingreso no encontrado'], 404);
+        echo json_encode(['success' => false, 'message' => 'Ingreso no encontrado']);
+        exit;
     }
     
     // Obtener productos del ingreso
@@ -47,7 +49,7 @@ try {
     
     $stmtProductos = $db->prepare($sqlProductos);
     $stmtProductos->execute([':id_ingreso' => $idIngreso]);
-    $productos = $stmtProductos->fetchAll();
+    $productos = $stmtProductos->fetchAll(PDO::FETCH_ASSOC);
     
     // Generar HTML
     ob_start();
@@ -57,7 +59,7 @@ try {
         <div class="info-section">
             <h4>📅 Información del Ingreso</h4>
             <p><strong>Fecha:</strong> <?php echo date('d/m/Y', strtotime($ingreso['fecha'])); ?></p>
-            <p><strong>N° Comprobante:</strong> <?php echo $ingreso['numero_comprobante'] ?: 'Sin número'; ?></p>
+            <p><strong>N° Comprobante:</strong> <?php echo htmlspecialchars($ingreso['numero_comprobante']) ?: 'Sin número'; ?></p>
             <p><strong>ID Ingreso:</strong> #<?php echo $ingreso['id_ingreso']; ?></p>
             <?php if ($ingreso['observaciones']): ?>
                 <p><strong>Observaciones:</strong><br><?php echo nl2br(htmlspecialchars($ingreso['observaciones'])); ?></p>
@@ -68,16 +70,16 @@ try {
             <h4>🏭 Proveedor</h4>
             <p><strong><?php echo htmlspecialchars($ingreso['proveedor_nombre']); ?></strong></p>
             <?php if ($ingreso['proveedor_cuit']): ?>
-                <p><strong>CUIT:</strong> <?php echo $ingreso['proveedor_cuit']; ?></p>
+                <p><strong>CUIT:</strong> <?php echo htmlspecialchars($ingreso['proveedor_cuit']); ?></p>
             <?php endif; ?>
             <?php if ($ingreso['proveedor_contacto']): ?>
-                <p><strong>Contacto:</strong> <?php echo $ingreso['proveedor_contacto']; ?></p>
+                <p><strong>Contacto:</strong> <?php echo htmlspecialchars($ingreso['proveedor_contacto']); ?></p>
             <?php endif; ?>
             <?php if ($ingreso['proveedor_email']): ?>
-                <p><strong>Email:</strong> <?php echo $ingreso['proveedor_email']; ?></p>
+                <p><strong>Email:</strong> <?php echo htmlspecialchars($ingreso['proveedor_email']); ?></p>
             <?php endif; ?>
             <?php if ($ingreso['proveedor_telefono']): ?>
-                <p><strong>Teléfono:</strong> <?php echo $ingreso['proveedor_telefono']; ?></p>
+                <p><strong>Teléfono:</strong> <?php echo htmlspecialchars($ingreso['proveedor_telefono']); ?></p>
             <?php endif; ?>
         </div>
     </div>
@@ -98,9 +100,9 @@ try {
             <tbody>
                 <?php foreach ($productos as $producto): ?>
                     <tr>
-                        <td><?php echo $producto['codigo_producto'] ?: '-'; ?></td>
+                        <td><?php echo htmlspecialchars($producto['codigo_producto']) ?: '-'; ?></td>
                         <td><strong><?php echo htmlspecialchars($producto['producto_nombre']); ?></strong></td>
-                        <td><?php echo $producto['nombre_categoria']; ?></td>
+                        <td><?php echo htmlspecialchars($producto['nombre_categoria']) ?: 'Sin categoría'; ?></td>
                         <td style="text-align: right;"><?php echo $producto['cantidad']; ?></td>
                         <td style="text-align: right;"><?php echo formatearMoneda($producto['precio_unitario']); ?></td>
                         <td style="text-align: right;"><strong><?php echo formatearMoneda($producto['subtotal']); ?></strong></td>
@@ -123,16 +125,22 @@ try {
     <?php
     $html = ob_get_clean();
     
-    jsonResponse([
+    echo json_encode([
         'success' => true,
         'html' => $html
-    ]);
+    ], JSON_UNESCAPED_UNICODE);
     
 } catch (PDOException $e) {
     error_log("Error en detalle_ingreso.php: " . $e->getMessage());
-    jsonResponse([
+    echo json_encode([
         'success' => false,
-        'message' => 'Error al obtener el detalle'
-    ], 500);
+        'message' => 'Error al obtener el detalle: ' . $e->getMessage()
+    ], JSON_UNESCAPED_UNICODE);
+} catch (Exception $e) {
+    error_log("Error general en detalle_ingreso.php: " . $e->getMessage());
+    echo json_encode([
+        'success' => false,
+        'message' => 'Error inesperado: ' . $e->getMessage()
+    ], JSON_UNESCAPED_UNICODE);
 }
 ?>

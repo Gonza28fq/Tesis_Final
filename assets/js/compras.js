@@ -328,6 +328,9 @@ function agregarProducto() {
 /**
  * Actualizar visualización del carrito
  */
+/**
+ * Actualizar visualización del carrito
+ */
 function actualizarCarrito() {
     const contenedor = document.getElementById('carrito-items');
     
@@ -364,7 +367,7 @@ function actualizarCarrito() {
             
             infoDiferencia = `
                 <div class="precio-info">
-                    <span class="precio-anterior">Anterior: ${formatearNumero(item.diferencia_precio.anterior)}</span>
+                    <span class="precio-anterior">Anterior: $${formatearNumero(item.diferencia_precio.anterior)}</span>
                     <span class="precio-diferencia ${clase}">${simbolo} ${Math.abs(item.diferencia_precio.diferencia)}%</span>
                 </div>
             `;
@@ -376,7 +379,7 @@ function actualizarCarrito() {
                     <div class="item-nombre">${item.nombre} ${alertaPrecio}</div>
                     <div class="item-detalles">
                         Ubicación: ${item.nombre_ubicacion}<br>
-                        ${formatearNumero(item.precio_compra)} × ${item.cantidad} = ${formatearNumero(item.subtotal)}
+                        $${formatearNumero(item.precio_compra)} × ${item.cantidad} = $${formatearNumero(item.subtotal)}
                     </div>
                     ${infoDiferencia}
                 </div>
@@ -398,9 +401,9 @@ function actualizarCarrito() {
     });
     
     contenedor.innerHTML = html;
-    document.getElementById('total-compra').textContent = ' + formatearNumero(total)';
+    // ✅ LÍNEA CORREGIDA:
+    document.getElementById('total-compra').textContent = '$' + formatearNumero(total);
 }
-
 /**
  * Cambiar cantidad directamente desde input
  */

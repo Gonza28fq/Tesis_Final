@@ -406,7 +406,7 @@ if (!tienePermiso('ventas_crear')) {
             <h1>💰 Módulo de Ventas</h1>
             <div class="header-info">
                 <div class="user-info">
-                    <span>👤 <?php echo $_SESSION['nombre'] . ' ' . $_SESSION['apellido']; ?></span>
+                    <span>👤 <?php echo htmlspecialchars($_SESSION['nombre'] . ' ' . $_SESSION['apellido']); ?></span>
                 </div>
                 <a href="historial.php" class="btn btn-secondary">📋 Historial</a>
                 <a href="../../index.php" class="btn btn-secondary">🏠 Inicio</a>
@@ -423,7 +423,10 @@ if (!tienePermiso('ventas_crear')) {
                     <h2>👤 Cliente</h2>
                     <div class="form-group search-box">
                         <label for="buscar-cliente">Buscar cliente (Nombre, Email o DNI)</label>
-                        <input type="text" id="buscar-cliente" placeholder="Escriba para buscar...">
+                        <input type="text" id="buscar-cliente" 
+                               placeholder="Escriba para buscar..." 
+                               onkeyup="buscarClientes()" 
+                               autocomplete="off">
                         <div id="resultados-clientes" class="search-results"></div>
                     </div>
                     <div id="cliente-seleccionado"></div>
@@ -437,7 +440,10 @@ if (!tienePermiso('ventas_crear')) {
                     <h2>📦 Productos</h2>
                     <div class="form-group search-box">
                         <label for="buscar-producto">Buscar producto (Nombre o Código)</label>
-                        <input type="text" id="buscar-producto" placeholder="Escriba para buscar...">
+                        <input type="text" id="buscar-producto" 
+                               placeholder="Escriba para buscar..." 
+                               onkeyup="buscarProductos()" 
+                               autocomplete="off">
                         <div id="resultados-productos" class="search-results"></div>
                     </div>
                     <div class="form-group">
