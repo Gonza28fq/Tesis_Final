@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Debug Response</title>
+    <style>
+        body {
+            font-family: monospace;
+            padding: 20px;
+            background: #1e1e1e;
+            color: #d4d4d4;
+        }
+        .box {
+            background: #252526;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #3e3e42;
+        }
+        button {
+            background: #0e639c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 3px;
+            font-size: 14px;
+        }
+        button:hover {
+            background: #1177bb;
+        }
+        pre {
+            background: #1e1e1e;
+            padding: 10px;
+            overflow: auto;
+            border: 1px solid #3e3e42;
+            border-radius: 3px;
+        }
+        .error { color: #f48771; }
+        .success { color: #4ec9b0; }
+        input, select {
+            background: #3c3c3c;
+            color: #d4d4d4;
+            border: 1px solid #3e3e42;
+            padding: 8px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 Debug: Ver Respuesta Exacta del Servidor</h1>
+    
+    <div class="box">
+        <h3>Configuración de la Prueba</h3>
+        <p>ID del Rol: <input type="number" id="idRol" value="2" style="width: 100px;"></p>
+        <p>Permisos a Asignar (JSON): <input type="text" id="asignar" value="[8,9]" style="width: 200px;"></p>
+        <p>Permisos a Quitar (JSON): <input type="text" id="quitar" value="[5]" style="width: 200px;"></p>
+        <button onclick="probar()">🚀 Enviar Petición</button>
+    </div>
+    
+    <div class="box">
+        <h3>📤 Datos Enviados</h3>
+        <pre id="enviados"></pre>
+    </div>
+    
+    <div class="box">
+        <h3>📥 Respuesta HTTP</h3>
+        <pre id="respuesta"></pre>
+    </div>
+    
+    <div class="box">
+        <h3>🔍 Análisis</h3>
+        <pre id="analisis"></pre>
+    </div>
+    
+    <script>
+    function probar() {
+        const idRol = document.getElementById('idRol').value;
+        const asignar = document.getElementById('asignar').value;
+        const quitar = document.getElementById('quitar').value;
+        
+        const formData = new FormData();
+        formData.append('accion', 'guardar_cambios_rol');
+        formData.append('id_rol', idRol);
+        formData.append('asignar', asignar);
+        formData.append('quitar', quitar);
+        
+        // Mostrar datos enviados
+        document.getElementById('enviados').textContent = 
+            `accion: guardar_cambios_rol\n` +
+            `id_rol: ${idRol}\n` +
+            `asignar: ${asignar}\n` +
+            `quitar: ${quitar}`;
+        
+        document.getElementById('respuesta').textContent = '⏳ Enviando...';
+        document.getElementById('analisis').textContent = '⏳ Esperando respuesta...';
+        
+        fetch('roles_acciones.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            const contentType = response.headers.get('content-type');
+            console.log('Content-Type:', contentType);
+            console.log('Status:', response.status);
+            
+            return response.text().then(text => ({
+                text: text,
+                status: response.status,
+                contentType: contentType
+            }));
+        })
+        .then(data => {
+            // Mostrar respuesta cruda
+            document.getElementById('respuesta').innerHTML = 
+                `<span class="${data.status === 200 ? 'success' : 'error'}">Status: ${data.status}</span>\n` +
+                `Content-Type: ${data.contentType}\n\n` +
+                `RESPUESTA COMPLETA:\n${escapeHtml(data.text)}`;
+            
+            // Análisis
+            let analisis = '';
+            
+            // Intentar parsear como JSON
+            try {
+                const json = JSON.parse(data.text);
+                analisis += '✅ ES JSON VÁLIDO\n\n';
+                analisis += JSON.stringify(json, null, 2);
+                
+                if (json.success) {
+                    analisis = '✅ ÉXITO\n\n' + analisis;
+                } else {
+                    analisis = '❌ ERROR\n\n' + analisis;
+                }
+            } catch (e) {
+                analisis += '❌ NO ES JSON VÁLIDO\n\n';
+                analisis += 'Error: ' + e.message + '\n\n';
+                
+                // Buscar errores PHP comunes
+                if (data.text.includes('<br')) {
+                    analisis += '⚠️ DETECTADO: HTML/PHP Error Message\n';
+                    analisis += '   El servidor está devolviendo errores de PHP en lugar de JSON\n\n';
+                }
+                
+                if (data.text.includes('Fatal error')) {
+                    analisis += '⚠️ DETECTADO: Fatal Error\n';
+                    const match = data.text.match(/Fatal error:(.+?)in(.+?)on line(\d+)/);
+                    if (match) {
+                        analisis += `   Error: ${match[1]}\n`;
+                        analisis += `   Archivo: ${match[2]}\n`;
+                        analisis += `   Línea: ${match[3]}\n\n`;
+                    }
+                }
+                
+                if (data.text.includes('Parse error')) {
+                    analisis += '⚠️ DETECTADO: Parse Error (Error de sintaxis PHP)\n\n';
+                }
+                
+                if (data.text.includes('Warning')) {
+                    analisis += '⚠️ DETECTADO: PHP Warning\n\n';
+                }
+                
+                if (data.text.includes('Notice')) {
+                    analisis += '⚠️ DETECTADO: PHP Notice\n\n';
+                }
+                
+                // Mostrar primeras líneas del error
+                const lines = data.text.split('\n');
+                analisis += 'PRIMERAS LÍNEAS DE LA RESPUESTA:\n';
+                lines.slice(0, 10).forEach((line, i) => {
+                    analisis += `${i + 1}: ${line}\n`;
+                });
+            }
+            
+            document.getElementById('analisis').textContent = analisis;
+        })
+        .catch(error => {
+            document.getElementById('respuesta').innerHTML = 
+                `<span class="error">❌ ERROR DE RED</span>\n\n${error.message}`;
+            document.getElementById('analisis').textContent = 
+                'No se pudo conectar con el servidor';
+        });
+    }
+    
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+    </script>
+</body>
+</html>
