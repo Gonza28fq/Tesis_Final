@@ -1,150 +1,168 @@
-# 📊 Commercial Management System 2.0
-
-> Sistema integral de gestión comercial con arquitectura modular, control de roles y auditoría completa
+📊 Commercial Management System 2.0
+Comprehensive business management system featuring modular architecture, role-based access control (RBAC), and full audit logging.
 
 ![PHP](https://img.shields.io/badge/PHP-777BB4?style=flat&logo=php&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat&logo=javascript&logoColor=black)
 ![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=flat&logo=mysql&logoColor=white)
 ![Bootstrap](https://img.shields.io/badge/Bootstrap-7952B3?style=flat&logo=bootstrap&logoColor=white)
 
-## 🎯 Descripción
+🎯 Overview
+Enterprise management system developed as a thesis project to automate internal business processes, eliminating manual workflows and fragmented systems. The platform achieved an 85% reduction in administrative errors through data centralization and granular access control.
 
-Sistema de gestión empresarial desarrollado como proyecto de tesis que automatiza procesos comerciales internos, eliminando métodos manuales y sistemas aislados. Logró una reducción del 85% en errores administrativos mediante centralización de datos y control de accesos por roles.
+✨ Key Features
+✅ Customer Management: Full CRM module with transaction history.
 
-## ✨ Características Principales
+🛒 Sales Module: Recording, invoicing, and automated tax calculations.
 
-- ✅ **Gestión de Clientes**: Cartera completa con historial de transacciones
-- 🛒 **Módulo de Ventas**: Registro, facturación y cálculos automáticos de impuestos
-- 📦 **Control de Inventario**: Stock en tiempo real con alertas automáticas
-- 💰 **Gestión de Compras**: Proveedores y órdenes con seguimiento
-- 👥 **Sistema de Usuarios**: Roles y permisos con interfaces dinámicas
-- 📊 **Reportes Estadísticos**: Dashboards en tiempo real para decisiones estratégicas
-- 🔒 **Auditoría Completa**: Trazabilidad total de operaciones por usuario
+📦 Inventory Control: Real-time stock tracking with automated low-stock alerts.
 
-## 🛠️ Stack Tecnológico
+💰 Procurement Management: Supplier database and purchase order tracking.
 
-**Frontend:**
-- HTML5, CSS3, JavaScript (ES6+)
-- Bootstrap 5 para diseño responsive
-- AJAX para interacciones asíncronas
+👥 User System: Role-based permissions (RBAC) with dynamic UI rendering.
 
-**Backend:**
-- PHP 7.4+
-- Arquitectura MVC modular
-- API REST con JSON
-- Stored Procedures para seguridad
+📊 Statistical Reporting: Real-time dashboards for strategic decision-making.
 
-**Base de Datos:**
-- MySQL/MariaDB
-- Diseño normalizado con relaciones complejas
-- Triggers y procedures para integridad
+🔒 Comprehensive Auditing: Full traceability of all system operations per user.
 
-**Seguridad:**
-- Hashing de contraseñas (bcrypt)
-- Validaciones en tiempo real
-- Protección contra SQL Injection
-- Control de acceso por roles (RBAC)
+🛠️ Tech Stack
+Frontend:
 
-**Otras Tecnologías:**
-- Composer (gestión de dependencias)
-- Cron Jobs (tareas programadas)
-- Apache Server
+HTML5, CSS3, JavaScript (ES6+)
 
-## 📋 Requisitos
+Bootstrap 5 for responsive design.
 
-- PHP >= 7.4
-- MySQL >= 5.7 o MariaDB >= 10.3
-- Apache Server
-- Composer
+AJAX for asynchronous interactions.
 
-## 🚀 Instalación
+Backend:
 
-1. **Clonar el repositorio**
-```bash
+PHP 7.4+
+
+Modular MVC Architecture.
+
+REST API with JSON support.
+
+Stored Procedures for enhanced security and performance.
+
+Database:
+
+MySQL / MariaDB.
+
+Normalized schema with complex relational mapping.
+
+Triggers and procedures for data integrity.
+
+Security:
+
+Password hashing (bcrypt).
+
+Real-time server-side validations.
+
+SQL Injection protection.
+
+Role-Based Access Control (RBAC).
+
+Other Technologies:
+
+Composer (Dependency Management).
+
+Cron Jobs (Scheduled Tasks).
+
+Apache Server.
+
+📋 Requirements
+PHP >= 7.4
+
+MySQL >= 5.7 or MariaDB >= 10.3
+
+Apache Server
+
+Composer
+
+🚀 Installation
+Clone the repository
+
+Bash
 git clone https://github.com/Gonza28fq/Tesis_Final.git
 cd Tesis_Final
-```
+Install dependencies
 
-2. **Instalar dependencias**
-```bash
+Bash
 composer install
-```
+Database Configuration
 
-3. **Configurar base de datos**
-   - Crear una base de datos MySQL
-   - Importar el archivo `database.sql` (si está disponible)
-   - Editar `config/database.php` con tus credenciales
+Create a new MySQL database.
 
-4. **Configurar el servidor**
-   - Apuntar el DocumentRoot a la carpeta del proyecto
-   - O usar XAMPP/WAMP apuntando a la carpeta
+Import the database.sql file (if provided).
 
-5. **Acceder al sistema**
-```
+Update config/database.php with your credentials.
+
+Server Configuration
+
+Point your DocumentRoot to the project folder.
+
+Or use XAMPP/WAMP pointing to the directory.
+
+Access the System
+
 http://localhost/Tesis_Final
-```
+👤 Demo Credentials
+User: admin
+Password: [Contact developer]
+📸 Screenshots
+[Add screenshots here]
 
-## 👤 Credenciales de Prueba
-```
-Usuario: admin
-Contraseña: [contactar al desarrollador]
-```
-
-## 📸 Capturas de Pantalla
-
-[Aquí agregar screenshots cuando los tengas]
-
-## 🏗️ Arquitectura del Sistema
-
-### Módulos Principales:
-```
+🏗️ System Architecture
+Core Modules:
 📁 modules/
-  ├── clientes/      # Gestión de clientes
-  ├── ventas/        # Módulo de ventas
-  ├── compras/       # Gestión de compras
-  ├── productos/     # Control de inventario
-  ├── usuarios/      # Administración de usuarios
-  ├── auditorias/    # Sistema de trazabilidad
-  └── reportes/      # Dashboards y estadísticas
-```
+  ├── customers/      # Customer management (CRM)
+  ├── sales/          # Sales & Invoicing
+  ├── procurement/    # Purchase management
+  ├── inventory/      # Stock control
+  ├── users/          # User administration
+  ├── audit/          # Traceability system
+  └── reports/        # Dashboards and analytics
+Database Highlights:
+15+ Relational tables.
 
-### Base de Datos:
-- 15+ tablas relacionales
-- Triggers para auditoría automática
-- Stored procedures para operaciones críticas
-- Vistas para reportes optimizados
+Automated audit triggers.
 
-## 🔄 Migración a Stack Moderno (En Desarrollo)
+Stored procedures for critical operations.
 
-Actualmente desarrollando una versión 3.0 con:
-- **Frontend**: React + TypeScript
-- **Backend**: Node.js + Express
-- **Base de Datos**: PostgreSQL
-- **Seguridad mejorada**: JWT + cifrado robusto
+Optimized views for reporting.
 
-## 📄 Documentación
+🔄 Modern Stack Migration (In Progress)
+Currently developing version 3.0 featuring:
 
-Documentación técnica completa (240 páginas) disponible que incluye:
-- Análisis de requerimientos
-- Diseño de arquitectura
-- Diagramas UML (casos de uso, clases, secuencia)
-- Manual de usuario
-- Manual técnico
+Frontend: React + TypeScript.
 
-## 🤝 Contribuciones
+Backend: Node.js + Express.
 
-Este es un proyecto académico completado. Si encontrás bugs o tenés sugerencias, no dudes en abrir un issue.
+Database: PostgreSQL.
 
-## 👨‍💻 Autor
+Improved Security: JWT + Advanced Encryption.
 
-**Gonzalo Iván Pedraza**
-- 📧 Email: gonza280797@hotmail.com
-- 💼 LinkedIn: [linkedin.com/in/gonzalo-pedraza]](https://www.linkedin.com/in/gonzalo-pedraza-b8b568298/)
+📄 Documentation
+A full 240-page technical documentation is available, including:
 
-## 📝 Licencia
+Requirements Analysis.
 
-Este proyecto fue desarrollado como trabajo de tesis para el título de Técnico Universitario en Desarrollo de Software - Instituto 9 de Julio (2024)
+Architectural Design.
 
----
+UML Diagrams (Use Case, Class, Sequence).
 
-⭐ Si te resultó útil este proyecto, no dudes en darle una estrella!
+User and Technical Manuals.
+
+🤝 Contributions
+This is a completed academic project. If you find bugs or have suggestions, feel free to open an issue.
+
+👨‍💻 Author
+Gonzalo Iván Pedraza
+
+📧 Email: gonza280797@hotmail.com
+
+💼 LinkedIn: linkedin.com/in/gonzalo-pedraza
+
+📝 License
+This project was developed as a final thesis for the Software Development degree at Instituto 9 de Julio (2024).
+
+⭐ If you found this project useful, feel free to give it a star!
